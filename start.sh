@@ -1,24 +1,31 @@
 #!/usr/bin/env bash
 set -o errexit
 
-# Clear caches
 php artisan config:clear
-php artisan cache:clear
+php artisan route:clear
 
-# 1. Run migrations ONLY. 
-# We remove the --seed here to ensure the migration process closes completely.
-php artisan migrate:fresh --force
+# Run migrations FIRST — this creates the users table
+php artisan migrate --force
 
-# 2. Wait. This isn't just for luck; it forces the Postgres connection to 
-# finish its current transaction block.
-sleep 10
+# Create admin user via tinker AFTER migrations
+php artisan tinker --execute="
+\App\Models\User::updateOrCreate(
+    ['username' => 'admin'],
+    [
+        'name'     => 'System Admin',
+        'username' => 'admin',
+        'email'    => 'admin@school.com',
+        'password' => bcrypt('password123'),
+        'role'     => 'admin',
+    ]
+);
+echo 'Admin user created successfully';
+"
 
-# 3. Run the seeders as a fresh, new database connection.
+# Seed the rest of the data
 php artisan db:seed --force
 
-# 4. Final caching
 php artisan config:cache
 php artisan route:cache
 
-# 5. Start
 php artisan serve --host=0.0.0.0 --port=8000
