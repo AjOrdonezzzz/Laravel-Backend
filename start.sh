@@ -6,7 +6,7 @@ php artisan config:clear
 php artisan route:clear
 
 # Run migrations first — this creates all tables including cache
-php artisan migrate --force
+php artisan migrate:fresh --force
 
 # Now seed users
 php artisan db:seed --force
