@@ -1,18 +1,24 @@
 #!/usr/bin/env bash
 set -o errexit
 
-# Clear file-based caches only (not database cache)
+# Clear everything
 php artisan config:clear
+php artisan cache:clear
+php artisan view:clear
 php artisan route:clear
 
-# Run migrations first — this creates all tables including cache
-php artisan migrate:fresh --seed --force
+# Run migration separately with a pause
+php artisan migrate:fresh --force
 
+# Pause for 5 seconds to let Postgres settle
+sleep 5
 
+# Run the seeder
+php artisan db:seed --force
 
-# Cache config after migrations are done
+# Recache
 php artisan config:cache
 php artisan route:cache
 
-# Start server
+# Start
 php artisan serve --host=0.0.0.0 --port=8000
