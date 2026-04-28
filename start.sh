@@ -10,10 +10,10 @@ php artisan migrate --force
 # Create admin user via tinker AFTER migrations
 php artisan tinker --execute="
 \App\Models\User::updateOrCreate(
-    ['username' => 'admin'],
+    
     [
-        'name'     => 'System Admin',
         'username' => 'admin',
+        'name'     => 'System Admin',
         'email'    => 'admin@school.com',
         'password' => bcrypt('password123'),
         'role'     => 'admin',
