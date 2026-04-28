@@ -32,12 +32,12 @@ Route::get('/test', function () {
 
 // The login route must be public so users can actually log in!
 
- 
+   Route::post('/login', [LoginController::class, 'login']);
+   
 // We use 'auth:sanctum' to ensure only logged-in users with a token can enter
 
 Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
 
-    Route::post('/login', [LoginController::class, 'login']);
 
     Route::get('dashboard/stats', [StudentController::class, 'stats']);
     Route::get('notifications', [NotificationController::class, 'index']);
