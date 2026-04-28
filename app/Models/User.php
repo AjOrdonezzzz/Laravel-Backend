@@ -12,7 +12,7 @@ class User extends Authenticatable
     // 2. Add HasApiTokens to the use list
     use HasApiTokens, HasFactory, Notifiable;
     // Inside app/Models/User.php
-    protected $table = 'users';
+    // protected $table = 'users';
     /**
      * The attributes that are mass assignable.
      */
