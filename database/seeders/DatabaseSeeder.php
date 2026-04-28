@@ -48,7 +48,16 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        Department::factory(3)->create();
+            $depts = [
+            'College of Computing Studies',
+            'Information Technology Department',
+            'Computer Science Department',
+            'Information Systems Department'
+        ];
+
+        foreach ($depts as $name) {
+            \App\Models\Department::firstOrCreate(['department_name' => $name]);
+        }
         Room::factory(15)->create();
         Guardian::factory(20)->create();
 
