@@ -1,21 +1,37 @@
+# Use the official PHP image
 FROM php:8.2-fpm
 
 # Install system dependencies
-# Change this line in your Dockerfile:
 RUN apt-get update && apt-get install -y \
-    git curl libpng-dev libonig-dev libxml2-dev zip unzip libpq-dev
+    git \
+    curl \
+    libpng-dev \
+    libonig-dev \
+    libxml2-dev \
+    zip \
+    unzip \
+    libpq-dev
 
-# Install PHP extensions
-RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd pdo_pgsql
+# Install PHP extensions required for Laravel and PostgreSQL
+RUN docker-php-ext-install pdo_pgsql mbstring exif pcntl bcmath gd
 
-# Install Composer
+# Install Composer from the official image
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
+# Set working directory
 WORKDIR /var/www
+
+# Copy application files
 COPY . .
 
-# Ensure permissions
+# Install PHP dependencies
+RUN composer install --no-dev --optimize-autoloader
+
+# Set permissions for storage and cache
 RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
 
+# Expose port
 EXPOSE 8000
+
+# Start PHP built-in server
 CMD php artisan serve --host=0.0.0.0 --port=8000

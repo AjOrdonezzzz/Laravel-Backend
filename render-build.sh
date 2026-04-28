@@ -1,9 +1,8 @@
 #!/usr/bin/env bash
+# exit on error
 set -o errexit
 
-# Use the absolute path for composer
-/usr/bin/composer install --no-dev --optimize-autoloader
-
+composer install --no-dev --optimize-autoloader
 php artisan config:cache
 php artisan route:cache
 php artisan view:cache
