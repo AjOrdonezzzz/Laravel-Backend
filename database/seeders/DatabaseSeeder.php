@@ -28,25 +28,22 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        User::query()->updateOrCreate(
-            ['email' => 'admin@example.com'],
-            [
-                'username' => 'admin',
-                'name' => 'System Admin',
-                'role' => 'admin',
-                'password' => Hash::make('password123'),
-            ]
-        );
+        
+        User::create([
+            'email' => 'admin@example.com',
+            'username' => 'admin',
+            'name' => 'System Admin',
+            'role' => 'admin',
+            'password' => Hash::make('password123'),
+        ]);
 
-        User::query()->updateOrCreate(
-            ['email' => 'user@example.com'],
-            [
-                'username' => 'user',
-                'name' => 'Standard User',
-                'role' => 'user',
-                'password' => Hash::make('user123'),
-            ]
-        );
+        User::create([
+            'email' => 'user@example.com',
+            'username' => 'user',
+            'name' => 'Standard User',
+            'role' => 'user',
+            'password' => Hash::make('user123'),
+        ]);
 
         Department::factory(3)->create();
         Room::factory(15)->create();
