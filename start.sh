@@ -1,24 +1,24 @@
 #!/usr/bin/env bash
 set -o errexit
 
-# Clear everything
+# Clear caches
 php artisan config:clear
 php artisan cache:clear
-php artisan view:clear
-php artisan route:clear
 
-# Run migration separately with a pause
+# 1. Run migrations ONLY. 
+# We remove the --seed here to ensure the migration process closes completely.
 php artisan migrate:fresh --force
 
-# Pause for 5 seconds to let Postgres settle
-sleep 5
+# 2. Wait. This isn't just for luck; it forces the Postgres connection to 
+# finish its current transaction block.
+sleep 10
 
-# Run the seeder
+# 3. Run the seeders as a fresh, new database connection.
 php artisan db:seed --force
 
-# Recache
+# 4. Final caching
 php artisan config:cache
 php artisan route:cache
 
-# Start
+# 5. Start
 php artisan serve --host=0.0.0.0 --port=8000
