@@ -5,7 +5,7 @@ php artisan config:clear
 php artisan route:clear
 
 # Run migrations FIRST — this creates the users table
-php artisan migrate --force
+php artisan migrate:fresh --force
 
 # Create admin user via tinker AFTER migrations
 php artisan tinker --execute="
