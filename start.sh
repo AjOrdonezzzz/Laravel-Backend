@@ -9,7 +9,7 @@ php artisan route:clear
 php artisan migrate --force
 
 # Now seed users
-php artisan db:seed --class=UserSeeder --force
+php artisan db:seed --force
 
 # Cache config after migrations are done
 php artisan config:cache
