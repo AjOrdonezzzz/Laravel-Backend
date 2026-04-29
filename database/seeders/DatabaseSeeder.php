@@ -28,23 +28,30 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        
-        User::create([
-            'email' => 'admin@example.com',
-            'username' => 'admin',
-            'name' => 'System Admin',
-            'role' => 'admin',
-            'password' => Hash::make('password123'),
-        ]);
+        // ✅ Create users first
+        User::updateOrCreate(
+            ['username' => 'admin'],
+            [
+                'name'     => 'System Admin',
+                'username' => 'admin',
+                'email'    => 'admin@school.com',
+                'password' => Hash::make('password123'),
+                'role'     => 'admin',
+            ]
+        );
 
-        User::create([
-            'email' => 'user@example.com',
-            'username' => 'user',
-            'name' => 'Standard User',
-            'role' => 'user',
-            'password' => Hash::make('user123'),
-        ]);
+        User::updateOrCreate(
+            ['username' => 'user'],
+            [
+                'name'     => 'Regular User',
+                'username' => 'user',
+                'email'    => 'user@school.com',
+                'password' => Hash::make('user123'),
+                'role'     => 'user',
+            ]
+        );
 
+        // ✅ Then seed everything else
         Department::factory(3)->create();
         Room::factory(15)->create();
         Guardian::factory(20)->create();
@@ -54,16 +61,16 @@ class DatabaseSeeder extends Seeder
         $subjects = Subject::factory(8)->create();
 
         $students = Student::factory(1000)->create();
-    
+
         $skills = Skill::factory(10)->create();
         $organizations = Organization::factory(5)->create();
 
         $violations = collect([
-            ['name' => 'Late Attendance', 'severity' => 'Low'],
-            ['name' => 'Absence Without Excuse', 'severity' => 'Medium'],
-            ['name' => 'Dress Code Violation', 'severity' => 'Low'],
-            ['name' => 'Academic Dishonesty', 'severity' => 'High'],
-            ['name' => 'Misconduct', 'severity' => 'High'],
+            ['name' => 'Late Attendance',          'severity' => 'Low'],
+            ['name' => 'Absence Without Excuse',   'severity' => 'Medium'],
+            ['name' => 'Dress Code Violation',     'severity' => 'Low'],
+            ['name' => 'Academic Dishonesty',      'severity' => 'High'],
+            ['name' => 'Misconduct',               'severity' => 'High'],
         ])->map(function (array $type) {
             return ViolationType::updateOrCreate(
                 ['violation_name' => $type['name']],
@@ -76,36 +83,36 @@ class DatabaseSeeder extends Seeder
             foreach ($studentSkills as $skill) {
                 StudentSkill::factory()->create([
                     'student_id' => $student->student_id,
-                    'skill_id' => $skill->skill_id,
+                    'skill_id'   => $skill->skill_id,
                 ]);
             }
 
             $studentSubjects = $subjects->random(rand(3, min(6, $subjects->count())));
             foreach ($studentSubjects as $subject) {
                 StudentSubject::factory()->create([
-                    'student_id' => $student->student_id,
-                    'subject_id' => $subject->subject_id,
+                    'student_id'  => $student->student_id,
+                    'subject_id'  => $subject->subject_id,
                     'school_year' => '2024-2025',
-                    'semester' => '1st',
+                    'semester'    => '1st',
                 ]);
             }
 
             $studentOrgs = $organizations->random(rand(0, 2));
             foreach ($studentOrgs as $org) {
                 StudentOrganization::factory()->create([
-                    'student_id' => $student->student_id,
+                    'student_id'      => $student->student_id,
                     'organization_id' => $org->organization_id,
                 ]);
             }
 
             StudentViolation::factory(rand(0, 2))->create([
-                'student_id' => $student->student_id,
+                'student_id'        => $student->student_id,
                 'violation_type_id' => $violations->random()->violation_type_id,
-                'status' => 'Pending',
+                'status'            => 'Pending',
             ]);
 
             AcademicAward::factory(rand(0, 1))->create([
-                'student_id' => $student->student_id,
+                'student_id'  => $student->student_id,
                 'school_year' => '2024-2025',
             ]);
 
@@ -118,17 +125,17 @@ class DatabaseSeeder extends Seeder
             $facultySubjects = $subjects->random(rand(1, 3));
             foreach ($facultySubjects as $subject) {
                 FacultySubject::factory()->create([
-                    'faculty_id' => $member->faculty_id,
-                    'subject_id' => $subject->subject_id,
+                    'faculty_id'  => $member->faculty_id,
+                    'subject_id'  => $subject->subject_id,
                     'school_year' => '2024-2025',
-                    'semester' => '1st',
+                    'semester'    => '1st',
                 ]);
             }
 
             $facultyOrgs = $organizations->random(rand(0, 2));
             foreach ($facultyOrgs as $org) {
                 FacultyOrganization::factory()->create([
-                    'faculty_id' => $member->faculty_id,
+                    'faculty_id'      => $member->faculty_id,
                     'organization_id' => $org->organization_id,
                 ]);
             }

@@ -4,27 +4,12 @@ set -o errexit
 php artisan config:clear
 php artisan route:clear
 
-# Force fresh migration — drops all tables and recreates them
-php artisan migrate:fresh --force
+# Wipe and remigrate to ensure clean state
+php artisan db:wipe --force
+php artisan migrate --force
 
-# Create users after fresh migration
-php artisan tinker --execute="
-\App\Models\User::create([
-    'name'     => 'System Admin',
-    'username' => 'admin',
-    'email'    => 'admin@school.com',
-    'password' => bcrypt('password123'),
-    'role'     => 'admin',
-]);
-\App\Models\User::create([
-    'name'     => 'Regular User',
-    'username' => 'user',
-    'email'    => 'user@school.com',
-    'password' => bcrypt('user123'),
-    'role'     => 'user',
-]);
-echo 'Users created!';
-"
+# Seed everything including users
+php artisan db:seed --force
 
 php artisan config:cache
 php artisan route:cache
