@@ -37,12 +37,15 @@ Route::get('/check-users', function () {
     );
 });
 
+Route::prefix('v1')->group(function () {
+    Route::post('/login', [LoginController::class, 'login']); // ← public
+});
    
 // We use 'auth:sanctum' to ensure only logged-in users with a token can enter
 
 Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
 
-   Route::post('/login', [LoginController::class, 'login']);
+    
     Route::get('dashboard/stats', [StudentController::class, 'stats']);
     Route::get('notifications', [NotificationController::class, 'index']);
     Route::apiResource('students', StudentController::class);
