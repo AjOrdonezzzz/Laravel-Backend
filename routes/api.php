@@ -31,7 +31,11 @@ Route::get('/test', function () {
 });
 
 // The login route must be public so users can actually log in!
-
+Route::get('/check-users', function () {
+    return response()->json(
+        \App\Models\User::select('id', 'username', 'role', 'email')->get()
+    );
+});
 
    
 // We use 'auth:sanctum' to ensure only logged-in users with a token can enter
